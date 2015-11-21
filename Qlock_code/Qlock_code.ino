@@ -9,55 +9,54 @@ Euge and Arob code for Qlock
 // The 74HC595 uses a type of serial connection called SPI
 // (Serial Peripheral Interface) that requires three pins:
 
-int datapin = 5; 
-int clockpin = 6;
-int latchpin = 7;
+//register 1: small board
+int datapin1 = 2; 
+int clockpin1 = 3;
+int latchpin1 = 4 ;
+
+//register 2: bottom of big board
+int datapin2 = 5; 
+int clockpin2 = 6;
+int latchpin2 = 7;
+
+//register 3: top of big board
+int datapin3 = 8; 
+int clockpin3 = 9;
+int latchpin3 = 10;
 
 // We'll also declare a global variable for the data we're
 // sending to the shift register:
 
-byte data = 0;
+byte data1 = 0;
+byte data2 = 0;
+byte data3 = 0;
 
 
 void setup()
 {
   // Set the three SPI pins to be outputs:
 
-  pinMode(datapin, OUTPUT);
-  pinMode(clockpin, OUTPUT);  
-  pinMode(latchpin, OUTPUT);
+  pinMode(datapin1, OUTPUT);
+  pinMode(clockpin1, OUTPUT);  
+  pinMode(latchpin1, OUTPUT);
+  pinMode(datapin2, OUTPUT);
+  pinMode(clockpin2, OUTPUT);  
+  pinMode(latchpin2, OUTPUT);
+  pinMode(datapin3, OUTPUT);
+  pinMode(clockpin3, OUTPUT);  
+  pinMode(latchpin3, OUTPUT);
 }
 
 
 void loop()
 {
-  // We're going to use the same functions we played with back
-  // in circuit 04, "Multiple LEDs", we've just replaced
-  // digitalWrite() with a new function called shiftWrite()
-  // (see below). We also have a new function that demonstrates
-  // binary counting.
 
-  // To try the different functions below, uncomment the one
-  // you want to run, and comment out the remaining ones to
-  // disable them from running.
-  
-  //oneAfterAnother();      // All on, all off
-  
-  //oneOnAtATime();       // Scroll down the line
-  
-  //pingPong();           // Like above, but back and forth
-
-  //randomLED();          // Blink random LEDs
-  
-  //marquee();
-
-  binaryCount();        // Bit patterns from 0 to 255
-  //allOn();
+  //binaryCount();
+  allOn();
 }
 
 
 void shiftWrite(int desiredPin, boolean desiredState)
-
 // This function lets you make the shift register outputs
 // HIGH or LOW in exactly the same way that you use digitalWrite().
 
@@ -83,14 +82,14 @@ void shiftWrite(int desiredPin, boolean desiredState)
   // First we'll alter the global variable "data", changing the
   // desired bit to 1 or 0:
 
-  bitWrite(data,desiredPin,desiredState);
+  bitWrite(data1, desiredPin, desiredState);
   
   // Now we'll actually send that data to the shift register.
   // The shiftOut() function does all the hard work of
   // manipulating the data and clock pins to move the data
   // into the shift register:
 
-  shiftOut(datapin, clockpin, MSBFIRST, data);
+  shiftOut(datapin1, clockpin1, MSBFIRST, data1);
 
   // Once the data is in the shift register, we still need to
   // make it appear at the outputs. We'll toggle the state of
@@ -98,155 +97,8 @@ void shiftWrite(int desiredPin, boolean desiredState)
   // the data to the outputs. (Latch activates on the high-to
   // -low transition).
 
-  digitalWrite(latchpin, HIGH);
-  digitalWrite(latchpin, LOW);
-}
-
-
-/*
-oneAfterAnother()
-
-This function will light one LED, delay for delayTime, then light
-the next LED, and repeat until all the LEDs are on. It will then
-turn them off in the reverse order.
-*/
-
-void oneAfterAnother()
-{
-  int index;
-  int delayTime = 100; // Time (milliseconds) to pause between LEDs
-                       // Make this smaller for faster switching
-
-  // Turn all the LEDs on:
- 
-  // This for() loop will step index from 0 to 7
-  // (putting "++" after a variable means add one to it)
-  // and will then use digitalWrite() to turn that LED on.
-  
-  for(index = 0; index <= 7; index++)
-  {
-    shiftWrite(index, HIGH);
-    delay(delayTime);                
-  }
-
-  // Turn all the LEDs off:
-
-  // This for() loop will step index from 7 to 0
-  // (putting "--" after a variable means subtract one from it)
-  // and will then use digitalWrite() to turn that LED off.
- 
-  for(index = 7; index >= 0; index--)
-  {
-    shiftWrite(index, LOW);
-    delay(delayTime);
-  }
-}
-
- 
-/*
-oneOnAtATime()
-
-This function will step through the LEDs, lighting one at at time.
-*/
-
-void oneOnAtATime()
-{
-  int index;
-  int delayTime = 100; // Time (milliseconds) to pause between LEDs
-                       // Make this smaller for faster switching
-  
-  // step through the LEDs, from 0 to 7
-  
-  for(index = 0; index <= 7; index++)
-  {
-    shiftWrite(index, HIGH);	// turn LED on
-    delay(delayTime);		// pause to slow down the sequence
-    shiftWrite(index, LOW);	// turn LED off
-  }
-}
-
- 
-/*
-pingPong()
-
-This function will step through the LEDs, lighting one at at time,
-in both directions.
-*/
-
-void pingPong()
-{
-  int index;
-  int delayTime = 100; // time (milliseconds) to pause between LEDs
-                       // make this smaller for faster switching
-  
-  // step through the LEDs, from 0 to 7
-  
-  for(index = 0; index <= 7; index++)
-  {
-    shiftWrite(index, HIGH);	// turn LED on
-    delay(delayTime);		// pause to slow down the sequence
-    shiftWrite(index, LOW);	// turn LED off
-  }
-
-  // step through the LEDs, from 7 to 0
-  
-  for(index = 7; index >= 0; index--)
-  {
-    shiftWrite(index, HIGH);	// turn LED on
-    delay(delayTime);		// pause to slow down the sequence
-    shiftWrite(index, LOW);	// turn LED off
-  }
-}
-
-
-/*
-randomLED()
-
-This function will turn on random LEDs. Can you modify it so it
-also lights them for random times?
-*/
-
-void randomLED()
-{
-  int index;
-  int delayTime = 100; // time (milliseconds) to pause between LEDs
-                       // make this smaller for faster switching
-  
-  // The random() function will return a semi-random number each
-  // time it is called. See http://arduino.cc/en/Reference/Random
-  // for tips on how to make random() more random.
-  
-  index = random(8);	// pick a random number between 0 and 7
-  
-  shiftWrite(index, HIGH);	// turn LED on
-  delay(delayTime);		// pause to slow down the sequence
-  shiftWrite(index, LOW);	// turn LED off
-}
-
-
-/*
-marquee()
-
-This function will mimic "chase lights" like those around signs.
-*/
-
-void marquee()
-{
-  int index;
-  int delayTime = 200; // Time (milliseconds) to pause between LEDs
-                       // Make this smaller for faster switching
-  
-  // Step through the first four LEDs
-  // (We'll light up one in the lower 4 and one in the upper 4)
-  
-  for(index = 0; index <= 3; index++)
-  {
-    shiftWrite(index, HIGH);    // Turn a LED on
-    shiftWrite(index+4, HIGH);  // Skip four, and turn that LED on
-    delay(delayTime);		// Pause to slow down the sequence
-    shiftWrite(index, LOW);	// Turn both LEDs off
-    shiftWrite(index+4, LOW);
-  }
+  digitalWrite(latchpin1, HIGH);
+  digitalWrite(latchpin1, LOW);
 }
 
 
@@ -286,19 +138,27 @@ void binaryCount()
   
   // Send the data byte to the shift register:
 
-  shiftOut(datapin, clockpin, MSBFIRST, data);
+  shiftOut(datapin1, clockpin1, MSBFIRST, data1);
+  shiftOut(datapin2, clockpin2, MSBFIRST, data2);
+  shiftOut(datapin3, clockpin3, MSBFIRST, data3);
 
   // Toggle the latch pin to make the data appear at the outputs:
 
-  digitalWrite(latchpin, HIGH);
-  digitalWrite(latchpin, LOW);
+  digitalWrite(latchpin1, HIGH);
+  digitalWrite(latchpin1, LOW);
+  digitalWrite(latchpin2, HIGH);
+  digitalWrite(latchpin2, LOW);
+  digitalWrite(latchpin3, HIGH);
+  digitalWrite(latchpin3, LOW);
   
   // Add one to data, and repeat!
   // (Because a byte type can only store numbers from 0 to 255,
   // if we add more than that, it will "roll around" back to 0
   // and start over).
 
-  data++;
+  data3++;
+  data2 = data3;
+  data1 = data3;
 
   // Delay so you can see what's going on:
 
@@ -307,26 +167,29 @@ void binaryCount()
 
 void allOn()
 {
-  int delayTime = 20; // time (milliseconds) to pause between LEDs
-                        // make this smaller for faster switching
   
   // Send the data byte to the shift register:
+  data1 = 255;
+  data2 = 255;
+  data3 = 255;
 
-  shiftOut(datapin, clockpin, MSBFIRST, data);
+  shiftOut(datapin1, clockpin1, MSBFIRST, data1);
+  shiftOut(datapin2, clockpin2, MSBFIRST, data2);
+  shiftOut(datapin3, clockpin3, MSBFIRST, data3);
 
   // Toggle the latch pin to make the data appear at the outputs:
 
-  digitalWrite(latchpin, HIGH);
-  //digitalWrite(latchpin, LOW);
+  digitalWrite(latchpin1, HIGH);
+  digitalWrite(latchpin1, LOW);
+  digitalWrite(latchpin2, HIGH);
+  digitalWrite(latchpin2, LOW);
+  digitalWrite(latchpin3, HIGH);
+  digitalWrite(latchpin3, LOW);
   
   // Add one to data, and repeat!
   // (Because a byte type can only store numbers from 0 to 255,
   // if we add more than that, it will "roll around" back to 0
   // and start over).
+  delay(1000000000);
 
-  data++;
-
-  // Delay so you can see what's going on:
-
-  delay(delayTime);
 }
