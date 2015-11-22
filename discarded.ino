@@ -217,7 +217,7 @@ marquee()
 
 This function will mimic "chase lights" like those around signs.
 */
-
+/*
 void marquee()
 {
   int index;
@@ -237,4 +237,4 @@ void marquee()
   }
 }
 
-
+*/
