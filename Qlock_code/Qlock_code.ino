@@ -50,49 +50,9 @@ void setup()
 }
 
 
-void loop()
-{
-
-  //binaryCount();
-  allOn();
-}
 
 
-void binaryCount()
-{
-  int delayTime = 20; // time (milliseconds) to pause between LEDs
-                        // make this smaller for faster switching
-  
-  // Send the data byte to the shift register:
-
-  shiftOut(datapin1, clockpin1, MSBFIRST, data1);
-  shiftOut(datapin2, clockpin2, MSBFIRST, data2);
-  shiftOut(datapin3, clockpin3, MSBFIRST, data3);
-
-  // Toggle the latch pin to make the data appear at the outputs:
-
-  digitalWrite(latchpin1, HIGH);
-  digitalWrite(latchpin1, LOW);
-  digitalWrite(latchpin2, HIGH);
-  digitalWrite(latchpin2, LOW);
-  digitalWrite(latchpin3, HIGH);
-  digitalWrite(latchpin3, LOW);
-  
-  // Add one to data, and repeat!
-  // (Because a byte type can only store numbers from 0 to 255,
-  // if we add more than that, it will "roll around" back to 0
-  // and start over).
-
-  data3++;
-  data2 = data3;
-  data1 = data3;
-
-  // Delay so you can see what's going on:
-
-  delay(delayTime);
-}
-
-void allOn()
+void testTime()
 {
   
   // Send the data byte to the shift register:
@@ -115,9 +75,14 @@ void allOn()
   
   delay(500);
   clearAll();
-  turnOnWord(global_led_index++);
-  global_led_index++;
+  displayTime(0,0);
+
   delay(500);
+}
+void loop()
+{
+
+  testTime();
 }
 
 
@@ -141,58 +106,30 @@ void clearAll()
   digitalWrite(latchpin3, LOW);
 }
 /*
-it_is   0
-ten_1   1
-half    2
-quarter 3
-twenty  4
-five    5
-minutes 6
-past    7
-to  8
-one 9
-two 10
-three   11
-four    12
-five    13
-six 14
-seven   15
-eight   16
-nine    17
-ten_2   18
-eleven  19
-twelve  20
-o clock 21
-onemin  22
-twomin  23
-threemin    24
-fourmin 25
 */
-void setTime(int hour, int minutes)
+void displayTime(int hour_time, int minute_time)
 {
-  // asdf
-  data1 = 0;
-  data2 = 0;
-  data3 = 0;
+  // displays the time
+  clearAll();
   int it_is = 0;
-  int ten_1 = 1;
+  int ten_m = 1;
   int half =  2;
   int quarter = 3;
   int twenty =4;
-  int five =  5;
+  int five_m =  5;
   int minutes =6;
   int past =  7;
   int to =8;
-  int one 9;
-  int two 10;
+  int one =9;
+  int two = 10;
   int three = 11;
   int four =  12;
-  int five =  13;
+  int five_h =  13;
   int six = 14;
   int seven = 15;
   int eight = 16;
   int nine =  17;
-  int ten_2 = 18;
+  int ten_h = 18;
   int eleven =19;
   int twelve =20;
   int o_clock = 21;
@@ -204,11 +141,11 @@ void setTime(int hour, int minutes)
   turnOnWord(o_clock);
   // what hour should we display?
   int stated_hour = 0;
-  if (minutes < 35){
-    stated_hour = hour % 12;
+  if (minute_time < 35){
+    stated_hour = hour_time % 12;
   }
   else {
-      stated_hour = (hour + 1) % 12;
+      stated_hour = (hour_time + 1) % 12;
   }
   // Display hour
   if (stated_hour == 0) {
@@ -227,7 +164,7 @@ void setTime(int hour, int minutes)
     turnOnWord(four);
   }
   else if (stated_hour == 5) {
-    turnOnWord(five);
+    turnOnWord(five_h);
   }
   else if (stated_hour == 6) {
     turnOnWord(six);
@@ -242,25 +179,25 @@ void setTime(int hour, int minutes)
     turnOnWord(nine);
   }
   else if (stated_hour == 10) {
-    turnOnWord(ten_2);
+    turnOnWord(ten_h);
   }
   else if (stated_hour == 11) {
     turnOnWord(eleven);
   }
 
   // Turn on minutes
-  int closest_five = minutes - (minutes % 5);
+  int closest_five = minute_time - (minute_time % 5);
     if (closest_five == 0)
     {
       // say noth
     }
     else if (closest_five == 5){
-      turnOnWord(five);
+      turnOnWord(five_m);
       turnOnWord(minutes);
       turnOnWord(past);
     }
     else if (closest_five == 10){
-       turnOnWord(ten_1);
+       turnOnWord(ten_m);
        turnOnWord(minutes);
        turnOnWord(past);
     }
@@ -275,19 +212,19 @@ void setTime(int hour, int minutes)
     }
     else if (closest_five == 25){
        turnOnWord(twenty);
-       turnOnWord(five);
+       turnOnWord(five_m);
        turnOnWord(minutes);
        turnOnWord(past);
     }
     else if (closest_five == 30){
        turnOnWord(half);
        turnOnWord(past);
-       turnOnWord();
+       
 
     }
     else if (closest_five == 35){
        turnOnWord(twenty);
-       turnOnWord(five);
+       turnOnWord(five_m);
        turnOnWord(minutes);
        turnOnWord(to);
 
@@ -303,12 +240,12 @@ void setTime(int hour, int minutes)
        turnOnWord(to);
     }
     else if (closest_five == 50){
-       turnOnWord(ten_1);
+       turnOnWord(ten_m);
        turnOnWord(minutes);
        turnOnWord(to);
     }
     else if (closest_five == 55){
-       turnOnWord(five);
+       turnOnWord(five_m);
        turnOnWord(minutes);
        turnOnWord(to);
     }

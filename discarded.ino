@@ -238,3 +238,37 @@ void marquee()
 }
 
 */
+void binaryCount()
+{
+  int delayTime = 20; // time (milliseconds) to pause between LEDs
+                        // make this smaller for faster switching
+  
+  // Send the data byte to the shift register:
+
+  shiftOut(datapin1, clockpin1, MSBFIRST, data1);
+  shiftOut(datapin2, clockpin2, MSBFIRST, data2);
+  shiftOut(datapin3, clockpin3, MSBFIRST, data3);
+
+  // Toggle the latch pin to make the data appear at the outputs:
+
+  digitalWrite(latchpin1, HIGH);
+  digitalWrite(latchpin1, LOW);
+  digitalWrite(latchpin2, HIGH);
+  digitalWrite(latchpin2, LOW);
+  digitalWrite(latchpin3, HIGH);
+  digitalWrite(latchpin3, LOW);
+  
+  // Add one to data, and repeat!
+  // (Because a byte type can only store numbers from 0 to 255,
+  // if we add more than that, it will "roll around" back to 0
+  // and start over).
+
+  data3++;
+  data2 = data3;
+  data1 = data3;
+
+  // Delay so you can see what's going on:
+
+  delay(delayTime);
+}
+
