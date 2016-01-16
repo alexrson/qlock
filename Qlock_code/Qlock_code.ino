@@ -73,9 +73,9 @@ void testTime()
   digitalWrite(latchpin3, HIGH);
   digitalWrite(latchpin3, LOW);
   
-  delay(500);
+  delay(50000000);
   clearAll();
-  displayTime(0,0);
+  displayTime(0, 0);
 
   delay(500);
 }
@@ -119,8 +119,8 @@ void displayTime(int hour_time, int minute_time)
   int five_m =  5;
   int minutes =6;
   int past =  7;
-  int to =8;
-  int one =9;
+  int to = 8;
+  int one = 9;
   int two = 10;
   int three = 11;
   int four =  12;
@@ -130,11 +130,11 @@ void displayTime(int hour_time, int minute_time)
   int eight = 16;
   int nine =  17;
   int ten_h = 18;
-  int eleven =19;
-  int twelve =20;
+  int eleven = 19;
+  int twelve = 20;
   int o_clock = 21;
-  int onemin =22;
-  int twomin =23;
+  int onemin = 22;
+  int twomin = 23;
   int threemin =  24;
   int fourmin = 25;
   turnOnWord(it_is);
