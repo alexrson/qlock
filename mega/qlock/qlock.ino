@@ -32,27 +32,32 @@ int quarter_2 = 49;
 int unmapped_4 = 50;
 int half = 53;
 
-//start time
-int hour = 8;
-int min = 59;
+int sh;
+int sm;
 
 void setup() {
   allMode();
-  //int word = 29;
-  //digitalWrite(word, HIGH);
-  //displayTime(0, 55);
+  char *zh, *zm, *i;
+  char *record = __TIME__;
+  zh = strtok_r(record,":",&i);
+  zm = strtok_r(NULL,":",&i);
+  String s;
+  s = String(zh);
+  sh = s.toInt() % 12;
+  s = String(zm);
+  sm = s.toInt();
 }
 
 void loop(){
-  displayTime(hour, min);
-  delay(1000 * 60);
-  min++;
-  if (min == 60) {
-    min = 0;
-    hour++;
-    hour = hour % 12;
-  }
-  displayTime(hour, min);
+  int seconds_elapsed = millis() / 1000;
+  int hours_elapsed = seconds_elapsed / 3600;
+  int min_elapsed = (seconds_elapsed - 3600 * hours_elapsed) / 60.0;
+  int total_hours = hours_elapsed + sh;
+  int total_min = sm + min_elapsed;
+  int h = total_hours + (total_min / 60);
+  int m = total_min % 60;
+  displayTime(h, m);
+  delay(1000); 
 }
 
 void allMode()
