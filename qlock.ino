@@ -244,5 +244,3 @@ void displayTime(int hour_time, int minute_time)
     turnOnWord(fourmin);
    }
   }
-  
-
