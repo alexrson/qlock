@@ -1,3 +1,4 @@
+
 int onemin = 51;
 int threemin = 22;
 int fourmin = 29;
@@ -32,8 +33,9 @@ int quarter_2 = 49;
 int unmapped_4 = 50;
 int half = 53;
 
-int sh;
-int sm;
+
+unsigned long last_millis = 0;
+unsigned long starting_total_min;
 
 void setup() {
   allMode();
@@ -43,21 +45,49 @@ void setup() {
   zm = strtok_r(NULL,":",&i);
   String s;
   s = String(zh);
-  sh = s.toInt() % 12;
+  int sh = s.toInt() % 12;
   s = String(zm);
-  sm = s.toInt();
+  int sm = s.toInt();
+  starting_total_min = 60 * sh + sm;
+  Serial.begin(9600);
+  Serial.println("sh");
+  Serial.println(sh);
+  Serial.println("sm");
+  Serial.println(sm);
+  Serial.println("starting_total_min");
+  Serial.println(starting_total_min);
+  Serial.println("\n");
+  
 }
 
 void loop(){
-  int seconds_elapsed = millis() / 1000;
-  int hours_elapsed = seconds_elapsed / 3600;
-  int min_elapsed = (seconds_elapsed - 3600 * hours_elapsed) / 60.0;
-  int total_hours = hours_elapsed + sh;
-  int total_min = sm + min_elapsed;
-  int h = total_hours + (total_min / 60);
-  int m = total_min % 60;
+  unsigned long millis_now = millis();
+  unsigned long seconds_elapsed = millis_now / 1000;
+  unsigned long min_elapsed = seconds_elapsed / 60.0;
+  unsigned long now_total_min = (min_elapsed + starting_total_min) % 1440;
+  int h = now_total_min / 60;
+  int m = now_total_min % 60;
+  Serial.println(millis_now);
+  Serial.println(last_millis);
+  Serial.println(h);
+  Serial.println(m);
+  Serial.println("\n");
   displayTime(h, m);
-  delay(1000); 
+  if (last_millis >= millis_now && millis_now != 0)
+  {
+    Serial.println("FAIL");
+    while(1) { };
+  }
+  int loop_delay = 1000 * 30;
+  int loop_elapsed = millis_now - last_millis;
+  int loop_elapsed_deviation = loop_elapsed - loop_delay;
+  if (abs(loop_elapsed_deviation) > 5  && last_millis != 0) {
+    Serial.println(loop_elapsed);
+    Serial.println("Bad loop elapsed deviation");
+    while(1) { };
+  }
+  last_millis = millis_now;
+  delay(loop_delay); 
 }
 
 void allMode()
@@ -102,8 +132,6 @@ void displayTime(int hour_time, int minute_time)
 {
   // displays the time
   clearAll();
-  //turnOnWord(it_is);
-  //turnOnWord(o_clock);
   // what hour should we display?
   int stated_hour = 0;
   if (minute_time < 35) {
