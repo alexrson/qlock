@@ -1,6 +1,6 @@
 
 int onemin = 51;
-int threemin = 22;
+int threemin = 26; // 22 
 int fourmin = 29;
 int twomin = 52;
 int ten_m = 23;
@@ -62,7 +62,7 @@ void setup() {
 
 void loop(){
   unsigned long millis_now = millis();
-  unsigned long seconds_elapsed = millis_now / 1000;
+  unsigned long seconds_elapsed = millis_now / 1000 ; // / 1000;
   unsigned long min_elapsed = seconds_elapsed / 60.0;
   unsigned long now_total_min = (min_elapsed + starting_total_min) % 1440;
   int h = now_total_min / 60;
@@ -78,7 +78,7 @@ void loop(){
     Serial.println("FAIL");
     while(1) { };
   }
-  int loop_delay = 1000 * 30;
+  int loop_delay = 10 * 30;
   int loop_elapsed = millis_now - last_millis;
   int loop_elapsed_deviation = loop_elapsed - loop_delay;
   if (abs(loop_elapsed_deviation) > 5  && last_millis != 0) {
