@@ -1,12 +1,12 @@
 
 int onemin = 51;
-int threemin = 26; // 22 
+int threemin = 26; 
 int fourmin = 29;
 int twomin = 52;
 int ten_m = 23;
 int twelve_1 = 24;
-int twelve_2 = 25;
-int unmapped = 26;
+int twelve_2 = 22;
+int unmapped = 25;
 int unmapped_2 = 27;
 int nine = 28;
 int unmapped_3 = 29;
@@ -39,15 +39,18 @@ unsigned long starting_total_min;
 
 void setup() {
   allMode();
-  char *zh, *zm, *i;
+  char *compile_time_h, *compile_time_m, *i;
   char *record = __TIME__;
-  zh = strtok_r(record,":",&i);
-  zm = strtok_r(NULL,":",&i);
+  compile_time_h = strtok_r(record,":",&i);
+  compile_time_m = strtok_r(NULL,":",&i);
   String s;
-  s = String(zh);
+  s = String(compile_time_h);
   int sh = s.toInt() % 12;
-  s = String(zm);
+  s = String(compile_time_m);
   int sm = s.toInt();
+  // Here is where to hack in a specific time for bug testing
+  //sh = 12;
+  //sm = 20;
   starting_total_min = 60 * sh + sm;
   Serial.begin(9600);
   Serial.println("sh");
@@ -62,7 +65,7 @@ void setup() {
 
 void loop(){
   unsigned long millis_now = millis();
-  unsigned long seconds_elapsed = millis_now / 1000 ; // / 1000;
+  unsigned long seconds_elapsed = millis_now / 1000 ;  
   unsigned long min_elapsed = seconds_elapsed / 60.0;
   unsigned long now_total_min = (min_elapsed + starting_total_min) % 1440;
   int h = now_total_min / 60;
